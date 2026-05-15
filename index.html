@@ -1,0 +1,556 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genesis | 3-Month Elite Program</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#050505">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/32/32339.png">
+    <style>
+        :root {
+            --bg: #050505;
+            --card-bg: #111111;
+            --accent: #ffffff;
+            --accent-muted: #888888;
+            --border: #222222;
+            --cal-accent: #00ff88;
+            --db-accent: #00a2ff;
+            --completed-accent: #00ff88;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--accent);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-bottom: 5rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 4rem 2rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .hero p {
+            color: var(--accent-muted);
+            font-size: 1.1rem;
+            font-weight: 400;
+            max-width: 600px;
+        }
+
+        /* Navigation */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .nav-container::-webkit-scrollbar { display: none; }
+
+        .nav-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--accent-muted);
+            padding: 0.6rem 1.5rem;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-btn.active {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        /* Main Content Layout */
+        .content-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .week-section {
+            margin-bottom: 6rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .week-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .week-section.completed {
+            opacity: 0.5;
+        }
+
+        .week-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .week-info {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+        }
+
+        .week-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-muted);
+            text-transform: uppercase;
+        }
+
+        .week-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Completion Toggle */
+        .completion-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+
+        .completion-toggle:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .completion-toggle.active {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: var(--completed-accent);
+            color: var(--completed-accent);
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--accent-muted);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .active .checkbox {
+            background: var(--completed-accent);
+            border-color: var(--completed-accent);
+        }
+
+        .checkbox::after {
+            content: '✓';
+            font-size: 12px;
+            color: var(--bg);
+            display: none;
+        }
+
+        .active .checkbox::after {
+            display: block;
+        }
+
+        /* Day Cards */
+        .day-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .day-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-card:hover {
+            border-color: #444;
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .day-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .day-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Exercise Table */
+        .exercise-list {
+            margin-bottom: 1.5rem;
+        }
+
+        .exercise-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .exercise-item:last-child { border-bottom: none; }
+
+        .ex-info { flex: 1; }
+        .ex-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.2rem; }
+        .ex-meta { font-size: 0.8rem; color: var(--accent-muted); }
+        
+        .ex-stats {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            margin-left: 1rem;
+        }
+
+        .badge-mini {
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 800;
+            margin-left: 6px;
+        }
+        .badge-cal { background: rgba(0, 255, 136, 0.1); color: var(--cal-accent); }
+        .badge-db { background: rgba(0, 162, 255, 0.1); color: var(--db-accent); }
+
+        /* Video Link */
+        .yt-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: #ff4d4d;
+            text-decoration: none;
+            margin-top: 0.5rem;
+            font-weight: 600;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .yt-link:hover { opacity: 1; }
+
+        .tip-box {
+            margin-top: auto;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--accent-muted);
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .hero { padding: 4rem 1.5rem 2rem; }
+            .content-grid { padding: 0 1.5rem; }
+            .week-section { margin-bottom: 5rem; }
+            .day-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+            .day-card { padding: 2.5rem 2rem; border-radius: 32px; }
+            .week-header { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 1.5rem; 
+                margin-bottom: 2.5rem;
+                padding-bottom: 1.5rem;
+            }
+            .completion-toggle { 
+                width: 100%; 
+                justify-content: center; 
+                padding: 1rem;
+                font-size: 1rem;
+                border-radius: 16px;
+            }
+            .nav-container { padding: 0 1.5rem; gap: 0.8rem; }
+            .nav-btn { padding: 0.8rem 1.8rem; font-size: 0.95rem; }
+            .hero h1 { font-size: 2.8rem; }
+            .day-name { font-size: 1.5rem; margin-bottom: 2rem; }
+            .exercise-item { padding: 1.25rem 0; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="hero">
+    <h1>Genesis</h1>
+    <p>The 3-month clinical calisthenics & dumbbell progression. Engineered for performance.</p>
+</header>
+
+<nav class="sticky-nav">
+    <div class="nav-container" id="month-nav">
+        <button class="nav-btn active" onclick="showMonth(0)">Month 01</button>
+        <button class="nav-btn" onclick="showMonth(1)">Month 02</button>
+        <button class="nav-btn" onclick="showMonth(2)">Month 03</button>
+    </div>
+</nav>
+
+<main class="content-grid" id="main-content">
+    <!-- Content will be injected here -->
+</main>
+
+<script>
+const DB = "db";
+const CAL = "cal";
+const STORAGE_KEY = "genesis_progress_v2";
+
+const programData = [
+    {
+        month: 1,
+        title: "Foundation Phase",
+        weeks: [1, 2, 3, 4],
+        days: [
+            {
+                label: "Mon / Wed / Fri",
+                name: "Full Body Foundation",
+                exercises: [
+                    { name: "Push-ups", sets: "3", reps: "8-12", src: CAL, link: "https://www.youtube.com/watch?v=IODxDxX7oi4" },
+                    { name: "DB Floor Press", sets: "3", reps: "10", src: DB, link: "https://www.youtube.com/watch?v=uUGDRwge4F8" },
+                    { name: "Pull-ups", sets: "3", reps: "5-8", src: CAL, link: "https://www.youtube.com/watch?v=Y3ntNsIS2Q8" },
+                    { name: "DB Bent Row", sets: "3", reps: "10", src: DB, link: "https://www.youtube.com/watch?v=6TSP1TRMUzs" },
+                    { name: "Squats", sets: "3", reps: "15-20", src: CAL, link: "https://www.youtube.com/watch?v=xqvCmoLULNY" },
+                    { name: "DB Goblet Squat", sets: "3", reps: "12", src: DB, link: "https://www.youtube.com/watch?v=MxEiRCDbMaA" },
+                    { name: "DB Bicep Curl", sets: "3", reps: "12", src: DB, link: "https://www.youtube.com/watch?v=ykJmrZ5v0Oo" }
+                ],
+                tip: "Focus on the 3-second eccentric (lowering) phase for every move."
+            }
+        ]
+    },
+    {
+        month: 2,
+        title: "Hypertrophy Split",
+        weeks: [5, 6, 7, 8],
+        days: [
+            {
+                label: "Mon / Thu",
+                name: "Upper Body Power",
+                exercises: [
+                    { name: "Push-ups (Volume)", sets: "4", reps: "12-15", src: CAL, link: "https://www.youtube.com/watch?v=IODxDxX7oi4" },
+                    { name: "DB Shoulder Press", sets: "3", reps: "10", src: DB, link: "https://www.youtube.com/watch?v=qEwKCR5JCog" },
+                    { name: "Dips", sets: "4", reps: "10-15", src: CAL, link: "https://www.youtube.com/watch?v=l41SoWZiowI" },
+                    { name: "Pike Push-ups", sets: "3", reps: "8-12", src: CAL, link: "https://www.youtube.com/watch?v=x7_I5SUAd00" },
+                    { name: "DB Lateral Raise", sets: "3", reps: "12", src: DB, link: "https://www.youtube.com/watch?v=3VcKaXpzqRo" }
+                ],
+                tip: "Add 1 rep to every set compared to last week."
+            },
+            {
+                label: "Tue / Fri",
+                name: "Lower Body & Core",
+                exercises: [
+                    { name: "Bulgarian Split Squat", sets: "4", reps: "10-12", src: DB, link: "https://www.youtube.com/shorts/9p5e2BSvoLs" },
+                    { name: "DB Romanian DL", sets: "3", reps: "10", src: DB, link: "https://www.youtube.com/watch?v=JCXUYuzwNrM" },
+                    { name: "Glute Bridges", sets: "3", reps: "20", src: CAL, link: "https://www.youtube.com/watch?v=wPM8icPu6H8" },
+                    { name: "Hanging Leg Raise", sets: "3", reps: "10", src: CAL, link: "https://www.youtube.com/watch?v=Pr1ieGZ5atk" }
+                ],
+                tip: "Engage your core before every leg movement."
+            }
+        ]
+    },
+    {
+        month: 3,
+        title: "Advanced Mastery",
+        weeks: [9, 10, 11, 12],
+        days: [
+            {
+                label: "Mon / Thu",
+                name: "Elite Upper",
+                exercises: [
+                    { name: "Archer Push-ups", sets: "3", reps: "6-10", src: CAL, link: "https://www.youtube.com/watch?v=MxVbNel13Ek" },
+                    { name: "Decline Push-ups", sets: "4", reps: "12-15", src: CAL, link: "https://www.youtube.com/watch?v=SKPab2YC8BE" },
+                    { name: "DB Incline Press", sets: "4", reps: "10", src: DB, link: "https://www.youtube.com/watch?v=uUGDRwge4F8" },
+                    { name: "Muscle-up Prog.", sets: "3", reps: "5", src: CAL, link: "https://www.youtube.com/watch?v=6v6IsZcvqCA" }
+                ],
+                tip: "Explosive movement on the way up, 4 seconds on the way down."
+            },
+            {
+                label: "Tue / Fri",
+                name: "Elite Lower",
+                exercises: [
+                    { name: "Pistol Squats", sets: "4", reps: "6-10", src: CAL, link: "https://www.youtube.com/watch?v=tiA23NSUm7A" },
+                    { name: "DB Romanian DL", sets: "4", reps: "10", src: DB, link: "https://www.youtube.com/watch?v=JCXUYuzwNrM" },
+                    { name: "Windshield Wipers", sets: "3", reps: "10", src: CAL, link: "https://www.youtube.com/watch?v=ygwS-vtkhew" }
+                ],
+                tip: "Keep your tension throughout the entire range of motion."
+            }
+        ]
+    }
+];
+
+let progress = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+
+function saveProgress() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+}
+
+function toggleWeek(wkNum) {
+    progress[wkNum] = !progress[wkNum];
+    saveProgress();
+    
+    const section = document.querySelector(`[data-week="${wkNum}"]`);
+    const toggle = section.querySelector('.completion-toggle');
+    
+    section.classList.toggle('completed', progress[wkNum]);
+    toggle.classList.toggle('active', progress[wkNum]);
+    toggle.querySelector('span').innerText = progress[wkNum] ? 'Completed' : 'Mark as Done';
+}
+
+function renderMonth(monthIdx) {
+    const main = document.getElementById('main-content');
+    const data = programData[monthIdx];
+    main.innerHTML = '';
+
+    data.weeks.forEach(wkNum => {
+        const isCompleted = progress[wkNum] || false;
+        const weekSection = document.createElement('section');
+        weekSection.className = `week-section ${isCompleted ? 'completed' : ''}`;
+        weekSection.setAttribute('data-week', wkNum);
+        
+        let dayHtml = '';
+        data.days.forEach(day => {
+            let exHtml = day.exercises.map(ex => `
+                <div class="exercise-item">
+                    <div class="ex-info">
+                        <div class="ex-title">
+                            ${ex.name}
+                            <span class="badge-mini ${ex.src === CAL ? 'badge-cal' : 'badge-db'}">${ex.src}</span>
+                        </div>
+                        <a href="${ex.link}" target="_blank" class="yt-link">▶ Video Tutorial</a>
+                    </div>
+                    <div class="ex-stats">${ex.sets} × ${ex.reps}</div>
+                </div>
+            `).join('');
+
+            dayHtml += `
+                <div class="day-card">
+                    <span class="day-label">${day.label}</span>
+                    <h3 class="day-name">${day.name}</h3>
+                    <div class="exercise-list">${exHtml}</div>
+                    <div class="tip-box">${day.tip}</div>
+                </div>
+            `;
+        });
+
+        weekSection.innerHTML = `
+            <div class="week-header">
+                <div class="week-info">
+                    <span class="week-number">Phase ${monthIdx + 1}</span>
+                    <h2 class="week-title">Week ${wkNum < 10 ? '0' + wkNum : wkNum}</h2>
+                </div>
+                <div class="completion-toggle ${isCompleted ? 'active' : ''}" onclick="toggleWeek(${wkNum})">
+                    <div class="checkbox"></div>
+                    <span>${isCompleted ? 'Completed' : 'Mark as Done'}</span>
+                </div>
+            </div>
+            <div class="day-grid">${dayHtml}</div>
+        `;
+
+        main.appendChild(weekSection);
+        
+        // Intersection Observer for fade-in effect
+        setTimeout(() => weekSection.classList.add('visible'), 50);
+    });
+}
+
+function showMonth(idx) {
+    // Update Nav
+    document.querySelectorAll('.nav-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', i === idx);
+    });
+    
+    // Render
+    renderMonth(idx);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Initial Render
+renderMonth(0);
+
+// Scroll reveal
+const observerOptions = {
+    threshold: 0.1
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, observerOptions);
+
+document.querySelectorAll('.week-section').forEach(section => observer.observe(section));
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+            .then(reg => console.log('Service Worker registered'))
+            .catch(err => console.error('Service Worker registration failed', err));
+    });
+}
+</script>
+</body>
+</html>

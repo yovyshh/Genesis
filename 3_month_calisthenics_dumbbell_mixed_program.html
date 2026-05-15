@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans, system-ui, sans-serif); padding: 1rem 0; }
+h1 { font-size: 16px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 4px; }
+.subtitle { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.25rem; }
+.month-tabs { display: flex; gap: 6px; margin-bottom: 1rem; flex-wrap: wrap; }
+.mtab { padding: 6px 16px; border-radius: 8px; border: 0.5px solid var(--color-border-secondary); font-size: 13px; cursor: pointer; background: transparent; color: var(--color-text-secondary); transition: all 0.15s; }
+.mtab.active { background: var(--color-background-secondary); color: var(--color-text-primary); font-weight: 500; border-color: var(--color-border-primary); }
+.day-tabs { display: flex; gap: 6px; margin-bottom: 1rem; flex-wrap: wrap; }
+.dtab { padding: 5px 12px; border-radius: 8px; border: 0.5px solid var(--color-border-secondary); font-size: 12px; cursor: pointer; background: transparent; color: var(--color-text-secondary); transition: all 0.15s; }
+.dtab.active { background: var(--color-background-secondary); color: var(--color-text-primary); font-weight: 500; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+.freq-row { display: flex; gap: 8px; align-items: center; margin-bottom: 0.85rem; flex-wrap: wrap; }
+.freq-tag { font-size: 12px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); padding: 3px 10px; border-radius: 20px; color: var(--color-text-secondary); }
+.badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+.b1 { background: #E6F1FB; color: #0C447C; }
+.b2 { background: #EEEDFE; color: #3C3489; }
+.b3 { background: #E1F5EE; color: #085041; }
+table { width: 100%; border-collapse: collapse; }
+th { font-size: 11px; color: var(--color-text-tertiary); text-align: left; padding: 6px 6px; border-bottom: 0.5px solid var(--color-border-secondary); font-weight: 500; }
+td { font-size: 13px; color: var(--color-text-primary); padding: 8px 6px; border-bottom: 0.5px solid var(--color-border-tertiary); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.note { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+.src-db { font-size: 10px; background: #E6F1FB; color: #0C447C; padding: 1px 6px; border-radius: 20px; display: inline-block; margin-top: 3px; }
+.src-cal { font-size: 10px; background: #E1F5EE; color: #085041; padding: 1px 6px; border-radius: 20px; display: inline-block; margin-top: 3px; }
+a.yt { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; color: #CC0000; text-decoration: none; background: #FCEBEB; padding: 2px 7px; border-radius: 20px; margin-top: 2px; }
+a.yt:hover { background: #F7C1C1; }
+.tip-box { background: var(--color-background-secondary); border-left: 2px solid #534AB7; border-radius: 0 8px 8px 0; padding: 0.75rem 1rem; font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin-top: 0.75rem; }
+.legend { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1rem; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--color-text-secondary); }
+.dot-db { width: 8px; height: 8px; border-radius: 50%; background: #0C447C; }
+.dot-cal { width: 8px; height: 8px; border-radius: 50%; background: #085041; }
+@media (prefers-color-scheme: dark) {
+  a.yt { background: #501313; color: #F7C1C1; }
+  a.yt:hover { background: #6B1A1A; }
+  .b1 { background: #0C447C; color: #B5D4F4; }
+  .b2 { background: #3C3489; color: #CECBF6; }
+  .b3 { background: #085041; color: #9FE1CB; }
+  .src-db { background: #0C447C; color: #B5D4F4; }
+  .src-cal { background: #085041; color: #9FE1CB; }
+}
+</style>
+</head>
+<body>
+
+<h1>3-Month Calisthenics + Dumbbell Program</h1>
+<p class="subtitle">Mixed plan tailored for your equipment · all YouTube links included</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot-cal"></div> calisthenics</div>
+  <div class="legend-item"><div class="dot-db"></div> dumbbell added</div>
+</div>
+
+<div class="month-tabs" id="mtabs"></div>
+<div id="mcontent"></div>
+
+<script>
+const DB = "dumbbell";
+const CAL = "calisthenics";
+
+const data = {
+  months: [
+    {
+      label: "Month 1", badge: "b1", badgeText: "Foundation",
+      title: "Weeks 1–4 · Full Body · 3×/week",
+      freq: ["3×/week", "Mon · Wed · Fri"],
+      tip: "Your barbell weights go up to 16kg total. For Month 1 dumbbells, use 2kg–3kg for isolation moves (curls, raises) and 5kg for compound moves (rows, press). Focus on form — this month builds the base for everything that follows.",
+      days: [
+        {
+          label: "Full Body",
+          title: "Full Body Workout", sub: "All muscle groups · Mon / Wed / Fri",
+          exercises: [
+            { name: "Warm-up", sets: "—", reps: "5–10 min", note: "Jumping jacks, high knees, arm circles", src: CAL, link: null },
+            { name: "Push-ups", sets: "3", reps: "8–12", note: "Keep body straight, core tight", src: CAL, link: "https://www.youtube.com/watch?v=IODxDxX7oi4", lt: "Tutorial" },
+            { name: "Dumbbell Floor Press", sets: "3", reps: "10 reps", note: "5kg each hand · 3 sec lowering · replaces bench", src: DB, link: "https://www.youtube.com/watch?v=uUGDRwge4F8", lt: "Tutorial" },
+            { name: "Pull-ups or Inverted Rows", sets: "3", reps: "5–8", note: "Use band if needed", src: CAL, link: "https://www.youtube.com/watch?v=Y3ntNsIS2Q8", lt: "Pull-ups", link2: "https://www.youtube.com/watch?v=GdyhjXlxE-U", lt2: "Inverted Rows" },
+            { name: "Dumbbell Bent-Over Row", sets: "3", reps: "10 reps", note: "5kg · hinge at hips · elbows back", src: DB, link: "https://www.youtube.com/watch?v=6TSP1TRMUzs", lt: "Tutorial" },
+            { name: "Squats", sets: "3", reps: "15–20", note: "Knees track over toes", src: CAL, link: "https://www.youtube.com/watch?v=xqvCmoLULNY", lt: "Tutorial" },
+            { name: "Dumbbell Goblet Squat", sets: "3", reps: "12 reps", note: "5kg · adds load to squat pattern", src: DB, link: "https://www.youtube.com/watch?v=MxEiRCDbMaA", lt: "Tutorial" },
+            { name: "Lunges", sets: "3", reps: "10–15 per leg", note: "Torso upright", src: CAL, link: "https://www.youtube.com/watch?v=wrwwXE_x-pQ", lt: "Tutorial" },
+            { name: "Dumbbell Lateral Raise", sets: "3", reps: "12 reps", note: "2kg · slow and controlled", src: DB, link: "https://www.youtube.com/watch?v=3VcKaXpzqRo", lt: "Tutorial" },
+            { name: "Plank", sets: "3", reps: "30–60 sec", note: "Full core engagement", src: CAL, link: "https://www.youtube.com/watch?v=ASdvN_XEl_c", lt: "Tutorial" },
+            { name: "Dumbbell Bicep Curl", sets: "3", reps: "12 reps", note: "3kg · slow squeeze at top", src: DB, link: "https://www.youtube.com/watch?v=ykJmrZ5v0Oo", lt: "Tutorial" },
+            { name: "Cool down", sets: "—", reps: "5–10 min", note: "Stretch all worked muscles", src: CAL, link: null },
+          ]
+        }
+      ]
+    },
+    {
+      label: "Month 2", badge: "b2", badgeText: "Intensity",
+      title: "Weeks 5–8 · Split Routine · 4×/week",
+      freq: ["4×/week", "Mon · Tue · Thu · Fri"],
+      tip: "Increase dumbbell weight slightly this month — move to 5kg for isolation moves and use both 5kg dumbbells (10kg total) for rows and presses. Add 1 rep per set each week on every exercise.",
+      days: [
+        {
+          label: "Upper (Day 1 & 4)",
+          title: "Upper Body", sub: "Day 1 & 4 · Chest · Back · Shoulders · Arms",
+          exercises: [
+            { name: "Warm-up", sets: "—", reps: "5–10 min", note: "Jogging, arm swings, dynamic stretches", src: CAL, link: null },
+            { name: "Push-ups", sets: "4", reps: "10–15", note: "Elbows tucked slightly", src: CAL, link: "https://www.youtube.com/watch?v=IODxDxX7oi4", lt: "Tutorial" },
+            { name: "Dumbbell Floor Press", sets: "4", reps: "10 reps", note: "5kg · slow eccentric", src: DB, link: "https://www.youtube.com/watch?v=uUGDRwge4F8", lt: "Tutorial" },
+            { name: "Pull-ups", sets: "4", reps: "6–10", note: "Band assist if needed", src: CAL, link: "https://www.youtube.com/watch?v=Y3ntNsIS2Q8", lt: "Tutorial" },
+            { name: "Dumbbell Bent-Over Row", sets: "4", reps: "10 reps", note: "5kg each hand", src: DB, link: "https://www.youtube.com/watch?v=6TSP1TRMUzs", lt: "Tutorial" },
+            { name: "Pike Push-ups", sets: "3", reps: "8–12", note: "Elevate hips for shoulders", src: CAL, link: "https://www.youtube.com/watch?v=x7_I5SUAd00", lt: "Tutorial" },
+            { name: "Dumbbell Shoulder Press", sets: "3", reps: "10 reps", note: "3kg or 5kg · seated or standing", src: DB, link: "https://www.youtube.com/watch?v=qEwKCR5JCog", lt: "Tutorial" },
+            { name: "Dips", sets: "4", reps: "10–15", note: "Parallel bars or bench", src: CAL, link: "https://www.youtube.com/watch?v=l41SoWZiowI", lt: "Tutorial" },
+            { name: "Dumbbell Overhead Tricep Extension", sets: "3", reps: "12 reps", note: "3kg · elbows close to head", src: DB, link: "https://www.youtube.com/watch?v=-Vyt2QdsR7I", lt: "Tutorial" },
+            { name: "Plank to Push-up", sets: "3", reps: "10–15", note: "Core tight", src: CAL, link: "https://www.youtube.com/watch?v=56vUOad6Irs", lt: "Tutorial" },
+            { name: "Dumbbell Lateral Raise", sets: "3", reps: "12 reps", note: "3kg · shoulder width", src: DB, link: "https://www.youtube.com/watch?v=3VcKaXpzqRo", lt: "Tutorial" },
+            { name: "Cool down", sets: "—", reps: "5–10 min", note: "Arms, shoulders, chest stretch", src: CAL, link: null },
+          ]
+        },
+        {
+          label: "Lower + Core (Day 2 & 3)",
+          title: "Lower Body & Core", sub: "Day 2 & 3 · Quads · Hamstrings · Glutes · Abs",
+          exercises: [
+            { name: "Warm-up", sets: "—", reps: "5–10 min", note: "Leg swings, hip circles, light jog", src: CAL, link: null },
+            { name: "Squats", sets: "4", reps: "20–25", note: "Knees over toes", src: CAL, link: "https://www.youtube.com/watch?v=xqvCmoLULNY", lt: "Tutorial" },
+            { name: "Dumbbell Goblet Squat", sets: "4", reps: "12 reps", note: "5kg · deeper than bodyweight", src: DB, link: "https://www.youtube.com/watch?v=MxEiRCDbMaA", lt: "Tutorial" },
+            { name: "Lunges", sets: "4", reps: "15–20 per leg", note: "Upright torso", src: CAL, link: "https://www.youtube.com/watch?v=wrwwXE_x-pQ", lt: "Tutorial" },
+            { name: "Dumbbell Romanian Deadlift", sets: "3", reps: "10 reps", note: "5kg · feel hamstring stretch", src: DB, link: "https://www.youtube.com/watch?v=JCXUYuzwNrM", lt: "Tutorial" },
+            { name: "Glute Bridges", sets: "3", reps: "20–25", note: "Squeeze at top", src: CAL, link: "https://www.youtube.com/watch?v=wPM8icPu6H8", lt: "Tutorial" },
+            { name: "Calf Raises", sets: "3", reps: "20–25", note: "Hold dumbbells for load · 5kg each", src: DB, link: "https://www.youtube.com/watch?v=gwLzBJYoWlI", lt: "Tutorial" },
+            { name: "Hanging Leg Raises", sets: "3", reps: "8–12", note: "Pull-up bar · legs straight", src: CAL, link: "https://www.youtube.com/watch?v=Pr1ieGZ5atk", lt: "Tutorial" },
+            { name: "Russian Twists", sets: "3", reps: "20 per side", note: "Hold dumbbell 2kg for extra load", src: DB, link: "https://www.youtube.com/watch?v=JyUqwkVpsi8", lt: "Tutorial" },
+            { name: "Cool down", sets: "—", reps: "5–10 min", note: "Hamstrings, glutes, quads", src: CAL, link: null },
+          ]
+        },
+        {
+          label: "Skill Training",
+          title: "Skill Training", sub: "2–3×/week · after main workout",
+          exercises: [
+            { name: "Handstand Practice", sets: "3", reps: "20–30 sec", note: "Wall-assisted", src: CAL, link: "https://www.youtube.com/watch?v=eFmjckKXEoA", lt: "Tutorial" },
+            { name: "L-Sit Progressions", sets: "3", reps: "10–15 sec", note: "Floor or parallettes", src: CAL, link: "https://www.youtube.com/watch?v=HxDP7SqggpI", lt: "Tutorial" },
+            { name: "Dumbbell Wrist Curl", sets: "2", reps: "15 reps", note: "2kg · builds grip for L-sit and pull-ups", src: DB, link: "https://www.youtube.com/watch?v=_MaXaFr6sHo", lt: "Tutorial" },
+          ]
+        }
+      ]
+    },
+    {
+      label: "Month 3", badge: "b3", badgeText: "Advanced",
+      title: "Weeks 9–12 · Advanced · 4–5×/week",
+      freq: ["4–5×/week"],
+      tip: "By now you should be comfortable with 5kg dumbbells on all exercises. Try moving to 5kg + 3kg (8kg) on rows and RDLs. The advanced calisthenics moves (archer push-up, pistol squat, windshield wiper) are hard — use the tutorials and be patient.",
+      days: [
+        {
+          label: "Upper (Day 1 & 4)",
+          title: "Upper Body", sub: "Day 1 & 4 · Advanced push & pull",
+          exercises: [
+            { name: "Warm-up", sets: "—", reps: "5–10 min", note: "Jump rope, dynamic stretches", src: CAL, link: null },
+            { name: "Decline Push-ups", sets: "4", reps: "10–15", note: "Feet elevated on chair or box", src: CAL, link: "https://www.youtube.com/watch?v=SKPab2YC8BE", lt: "Tutorial" },
+            { name: "Dumbbell Incline Floor Press", sets: "4", reps: "10 reps", note: "5kg · prop torso on bag/pillow at angle", src: DB, link: "https://www.youtube.com/watch?v=uUGDRwge4F8", lt: "Tutorial" },
+            { name: "Pull-ups", sets: "4", reps: "8–12", note: "Full range of motion", src: CAL, link: "https://www.youtube.com/watch?v=Y3ntNsIS2Q8", lt: "Tutorial" },
+            { name: "Dumbbell Hammer Curl", sets: "3", reps: "12 reps", note: "3kg or 5kg · builds arm thickness", src: DB, link: "https://www.youtube.com/watch?v=zC3nLlEvin4", lt: "Tutorial" },
+            { name: "Archer Push-ups", sets: "3", reps: "6–10 per side", note: "Full control · one arm takes most load", src: CAL, link: "https://www.youtube.com/watch?v=MxVbNel13Ek", lt: "Tutorial" },
+            { name: "Dips", sets: "4", reps: "10–15", note: "Parallel bars or bench", src: CAL, link: "https://www.youtube.com/watch?v=l41SoWZiowI", lt: "Tutorial" },
+            { name: "Dumbbell Rear Delt Fly", sets: "3", reps: "12 reps", note: "2kg · bent forward · replaces face pull", src: DB, link: "https://www.youtube.com/watch?v=EA7u4Q_8HQ0", lt: "Tutorial" },
+            { name: "Plank to Push-up", sets: "3", reps: "15–20", note: "Core tight throughout", src: CAL, link: "https://www.youtube.com/watch?v=56vUOad6Irs", lt: "Tutorial" },
+            { name: "Dumbbell Lateral Raise", sets: "3", reps: "12 reps", note: "3kg or 5kg", src: DB, link: "https://www.youtube.com/watch?v=3VcKaXpzqRo", lt: "Tutorial" },
+            { name: "Cool down", sets: "—", reps: "5–10 min", note: "Upper body stretches", src: CAL, link: null },
+          ]
+        },
+        {
+          label: "Lower + Core (Day 2 & 3)",
+          title: "Lower Body & Core", sub: "Day 2 & 3 · Advanced legs and abs",
+          exercises: [
+            { name: "Warm-up", sets: "—", reps: "5–10 min", note: "Leg swings, hip circles", src: CAL, link: null },
+            { name: "Pistol Squats (Assisted)", sets: "4", reps: "6–10 per leg", note: "Hold door frame for balance", src: CAL, link: "https://www.youtube.com/watch?v=tiA23NSUm7A", lt: "Tutorial" },
+            { name: "Dumbbell Bulgarian Split Squat", sets: "4", reps: "10–15 per leg", note: "Hold 5kg each · rear foot elevated", src: DB, link: "https://www.youtube.com/shorts/9p5e2BSvoLs", lt: "Tutorial" },
+            { name: "Dumbbell Romanian Deadlift", sets: "4", reps: "10 reps", note: "5kg each · slow and deep", src: DB, link: "https://www.youtube.com/watch?v=JCXUYuzwNrM", lt: "Tutorial" },
+            { name: "Single-Leg Glute Bridge", sets: "3", reps: "15–20 per leg", note: "Squeeze glutes hard at top", src: CAL, link: "https://www.youtube.com/watch?v=3NXv0Nany-Q", lt: "Tutorial" },
+            { name: "Calf Raises", sets: "3", reps: "25–30", note: "Hold 5kg dumbbells", src: DB, link: "https://www.youtube.com/watch?v=c5Kv6-fnTj8", lt: "Tutorial" },
+            { name: "Hanging Leg Raises", sets: "3", reps: "10–15", note: "Straight legs · pull-up bar", src: CAL, link: "https://www.youtube.com/watch?v=EYe6dc_i4L0", lt: "Tutorial" },
+            { name: "Windshield Wipers", sets: "3", reps: "10–15 per side", note: "Advanced · shoulders pinned down", src: CAL, link: "https://www.youtube.com/watch?v=ygwS-vtkhew", lt: "Tutorial" },
+            { name: "Russian Twists with Dumbbell", sets: "3", reps: "20 per side", note: "3kg or 5kg · controlled rotation", src: DB, link: "https://www.youtube.com/watch?v=JyUqwkVpsi8", lt: "Tutorial" },
+            { name: "Cool down", sets: "—", reps: "5–10 min", note: "Quads, hamstrings, hip flexors", src: CAL, link: null },
+          ]
+        },
+        {
+          label: "Skill Training",
+          title: "Skill Training", sub: "3–4×/week · after main workout",
+          exercises: [
+            { name: "Handstand Practice", sets: "3", reps: "20–30 sec", note: "Wall to freestanding", src: CAL, link: "https://www.youtube.com/watch?v=X9fRDlIeGTU", lt: "Tutorial" },
+            { name: "L-Sit Hold", sets: "3", reps: "10–20 sec", note: "Parallettes or floor", src: CAL, link: "https://www.youtube.com/watch?v=eywCpp0p7lg", lt: "Tutorial" },
+            { name: "Muscle-Up Progressions", sets: "3", reps: "3–5 reps", note: "Band-assisted or jumping", src: CAL, link: "https://www.youtube.com/watch?v=6v6IsZcvqCA", lt: "Tutorial" },
+            { name: "Dumbbell Wrist Curl", sets: "2", reps: "15 reps", note: "2kg · grip strength for muscle-up", src: DB, link: "https://www.youtube.com/watch?v=_MaXaFr6sHo", lt: "Tutorial" },
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+let am = 0, ad = 0;
+
+function renderAll() {
+  document.getElementById('mtabs').innerHTML = data.months.map((m, i) =>
+    `<button class="mtab ${i===am?'active':''}" onclick="setM(${i})">${m.label}</button>`
+  ).join('');
+  const m = data.months[am];
+  document.getElementById('mcontent').innerHTML = `<div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+      <span style="font-size:15px;font-weight:500;color:var(--color-text-primary)">${m.title}</span>
+      <span class="badge ${m.badge}">${m.badgeText}</span>
+    </div>
+    <div class="freq-row">${m.freq.map(f=>`<span class="freq-tag">${f}</span>`).join('')}</div>
+    <div class="day-tabs" id="dtabs"></div>
+    <div id="dcontent"></div>
+    <div class="tip-box">💡 ${m.tip}</div>
+  </div>`;
+  renderDayTabs();
+  renderDay();
+}
+
+function renderDayTabs() {
+  const m = data.months[am];
+  document.getElementById('dtabs').innerHTML = m.days.map((d,i) =>
+    `<button class="dtab ${i===ad?'active':''}" onclick="setD(${i})">${d.label}</button>`
+  ).join('');
+}
+
+function renderDay() {
+  const d = data.months[am].days[ad];
+  let rows = d.exercises.map(e => {
+    const srcBadge = e.src === DB
+      ? `<span class="src-db">dumbbell</span>`
+      : `<span class="src-cal">calisthenics</span>`;
+    let vid = '—';
+    if (e.link && e.link2) {
+      vid = `<a class="yt" href="${e.link}" target="_blank">▶ ${e.lt}</a><br><a class="yt" href="${e.link2}" target="_blank" style="margin-top:4px">▶ ${e.lt2}</a>`;
+    } else if (e.link) {
+      vid = `<a class="yt" href="${e.link}" target="_blank">▶ ${e.lt}</a>`;
+    }
+    return `<tr>
+      <td><div>${e.name}</div><div>${srcBadge}</div><div class="note">${e.note}</div></td>
+      <td>${e.sets}</td><td>${e.reps}</td><td>${vid}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('dcontent').innerHTML = `
+    <div style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px">${d.title}</div>
+    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:0.75rem">${d.sub}</div>
+    <table><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Video</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function setM(i) { am=i; ad=0; renderAll(); }
+function setD(i) { ad=i; renderDayTabs(); renderDay(); }
+renderAll();
+</script>
+</body>
+</html>

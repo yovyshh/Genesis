@@ -1,0 +1,162 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.wrap { padding: 1rem 0; font-family: var(--font-sans); }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.tab { padding: 6px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); font-size: 13px; cursor: pointer; background: transparent; color: var(--color-text-secondary); transition: all 0.15s; }
+.tab.active { background: var(--color-background-secondary); color: var(--color-text-primary); font-weight: 500; border-color: var(--color-border-primary); }
+.tab:hover:not(.active) { background: var(--color-background-secondary); }
+.day-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; }
+.header-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+.day-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.badge { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+.b-strength { background: #EEEDFE; color: #3C3489; }
+.b-cardio { background: #E1F5EE; color: #085041; }
+.b-rest { background: #F1EFE8; color: #5F5E5A; }
+.b-active { background: #E6F1FB; color: #0C447C; }
+.b-hiit { background: #FAEEDA; color: #633806; }
+.day-sub { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 0.9rem; }
+.gear-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 0.9rem; }
+.gear-tag { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); color: var(--color-text-secondary); }
+.section-label { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; margin: 0.85rem 0 0.4rem; }
+.ex-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); gap: 10px; }
+.ex-row:last-child { border-bottom: none; }
+.ex-name { font-size: 14px; color: var(--color-text-primary); }
+.ex-note { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+.ex-detail { font-size: 12px; color: var(--color-text-secondary); text-align: right; white-space: nowrap; flex-shrink: 0; }
+.tip-box { background: var(--color-background-secondary); border-left: 2px solid #534AB7; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; padding: 0.75rem 1rem; margin-top: 1rem; font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+.rest-block { text-align: center; padding: 2.5rem 1rem; color: var(--color-text-secondary); font-size: 14px; line-height: 1.8; }
+.progress-note { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; margin-top: 1rem; font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+@media (prefers-color-scheme: dark) {
+  .b-strength { background: #3C3489; color: #CECBF6; }
+  .b-cardio { background: #085041; color: #9FE1CB; }
+  .b-rest { background: #444441; color: #D3D1C7; }
+  .b-active { background: #0C447C; color: #B5D4F4; }
+  .b-hiit { background: #633806; color: #FAC775; }
+}
+</style>
+
+<h2 class="sr-only">Full week home calisthenics and barbell workout plan for muscle gain, fat loss, and abs using pull-up bar, dumbbells, and barbell</h2>
+
+<div class="wrap">
+<div class="tabs" id="tabs"></div>
+<div id="content"></div>
+</div>
+
+<script>
+const workoutPhases = {
+  phase1: [
+    {
+      label: "Mon", name: "Full Body Foundation", badge: "Phase 1", bc: "b-strength",
+      sub: "Push · Pull · Legs · Core",
+      gear: ["Dumbbells", "Bodyweight", "Pull-up bar"],
+      tip: "Focus on form first. Add dumbbells to traditional calisthenics to spark extra muscle growth early.",
+      sections: [
+        { name: "Warm-up (5 min)", ex: [
+          { name: "Arm circles + shoulder rolls", detail: "2 min" },
+          { name: "Push-up (slow)", detail: "2 × 8" },
+        ]},
+        { name: "The Workout", ex: [
+          { name: "Push-ups", note: "Standard form", detail: "3 × 8-12" },
+          { name: "DB Floor Press", note: "Add chest volume", detail: "3 × 10" },
+          { name: "Pull-ups or Inverted Rows", note: "Back foundation", detail: "3 × 5-8" },
+          { name: "DB One-Arm Row", note: "Back thickness", detail: "3 × 10 per side" },
+          { name: "Dips", note: "Triceps/Chest", detail: "3 × 8-12" },
+          { name: "DB Overhead Press", note: "Shoulder mass", detail: "3 × 10" },
+          { name: "Bodyweight Squats", note: "Leg foundation", detail: "3 × 15-20" },
+          { name: "DB Goblet Squat", note: "Quads/Glutes focus", detail: "3 × 12" },
+          { name: "Plank", note: "Core stability", detail: "3 × 45 sec" },
+        ]}
+      ]
+    },
+    { label: "Tue", name: "Active Recovery", badge: "Recovery", bc: "b-rest", sub: "Mobility · Light Walk", rest: true, tip: "Recovery is when muscle is built. Keep it light today." },
+    {
+      label: "Wed", name: "Full Body Foundation", badge: "Phase 1", bc: "b-strength",
+      sub: "Push · Pull · Legs · Core",
+      gear: ["Dumbbells", "Bodyweight", "Pull-up bar"],
+      tip: "Consistency is key. Use your dumbbells to maintain intensity.",
+      sections: [
+        { name: "The Workout", ex: [
+          { name: "Push-ups", detail: "3 × 8-12" },
+          { name: "DB Floor Press", detail: "3 × 10" },
+          { name: "Inverted Rows", detail: "3 × 8-10" },
+          { name: "DB Hammer Curls", note: "Bicep/Forearm mass", detail: "3 × 12" },
+          { name: "Lunges", note: "Leg balance", detail: "3 × 10 per leg" },
+          { name: "DB Walking Lunges", note: "Glute focus", detail: "3 × 10 per leg" },
+          { name: "Plank", detail: "3 × 45 sec" },
+        ]}
+      ]
+    },
+    { label: "Thu", name: "Active Recovery", badge: "Recovery", bc: "b-rest", sub: "Mobility · Light Walk", rest: true, tip: "Hydrate and eat your protein today." },
+    {
+      label: "Fri", name: "Full Body Foundation", badge: "Phase 1", bc: "b-strength",
+      sub: "Push · Pull · Legs · Core",
+      gear: ["Dumbbells", "Bodyweight", "Pull-up bar"],
+      tip: "End the week strong. Push yourself with the dumbbells.",
+      sections: [
+        { name: "The Workout", ex: [
+          { name: "Push-ups (Diamond focus)", detail: "3 × 8-12" },
+          { name: "DB Lateral Raise", note: "Width for shoulders", detail: "3 × 12" },
+          { name: "Pull-ups", detail: "3 × max reps" },
+          { name: "DB One-Arm Row", detail: "3 × 10 per side" },
+          { name: "DB Goblet Squat", detail: "3 × 15" },
+          { name: "Calf Raises (DB)", detail: "3 × 20" },
+          { name: "Plank", detail: "3 × 60 sec" },
+        ]}
+      ]
+    },
+    { label: "Sat", name: "Cardio / Skill", badge: "Active", bc: "b-cardio", sub: "Light Jog · Stretching", rest: true, tip: "A 20-min walk today will help recovery." },
+    { label: "Sun", name: "Full Rest", badge: "Rest", bc: "b-rest", sub: "Recovery", rest: true, tip: "Get 8 hours of sleep tonight." },
+  ]
+};
+
+const days = workoutPhases.phase1;
+let active = 0;
+const tabsEl = document.getElementById('tabs');
+const contentEl = document.getElementById('content');
+
+function render() {
+  tabsEl.innerHTML = days.map((d, i) =>
+    `<button class="tab ${i === active ? 'active' : ''}" onclick="go(${i})">${d.label}</button>`
+  ).join('');
+
+  const d = days[active];
+  let html = `<div class="day-card">
+    <div class="header-row">
+      <span class="day-title">${d.name}</span>
+      <span class="badge ${d.bc}">${d.badge}</span>
+    </div>
+    <div class="day-sub">${d.sub || ''}</div>`;
+
+  if (d.gear && d.gear.length) {
+    html += `<div class="gear-row">${d.gear.map(g => `<span class="gear-tag">${g}</span>`).join('')}</div>`;
+  }
+
+  if (d.rest) {
+    html += `<div class="rest-block">
+      <div style="font-size:28px;margin-bottom:10px;">&#128564;</div>
+      <div>Complete rest. No training today.</div>
+      <div style="font-size:13px;margin-top:6px;">${d.tip || "Eat your protein. Hydrate. Sleep well."}</div>
+    </div>`;
+  } else {
+    d.sections.forEach(s => {
+      html += `<div class="section-label">${s.name}</div>`;
+      s.ex.forEach(e => {
+        html += `<div class="ex-row">
+          <div>
+            <div class="ex-name">${e.name}</div>
+            ${e.note ? `<div class="ex-note">${e.note}</div>` : ''}
+          </div>
+          <div class="ex-detail">${e.detail}</div>
+        </div>`;
+      });
+    });
+  }
+
+  html += `<div class="tip-box">&#128161; ${d.tip || "Focus on consistency."}</div></div>`;
+  contentEl.innerHTML = html;
+}
+
+function go(i) { active = i; render(); }
+render();
+</script>
